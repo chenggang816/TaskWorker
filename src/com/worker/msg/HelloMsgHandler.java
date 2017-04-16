@@ -4,7 +4,7 @@ public class HelloMsgHandler extends MsgHandler{
 
 	@Override
 	public String handle() {
-		return MsgMgr.packHelloMsg();
+		return MsgMgr.packReplyMsg();
 	}
 
 }

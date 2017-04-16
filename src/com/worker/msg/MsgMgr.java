@@ -6,9 +6,9 @@ import java.io.StringWriter;
 import org.json.simple.JSONObject;
 
 public class MsgMgr {
-	public static String packHelloMsg(){
+	public static String packReplyMsg(){
 		JSONObject obj = new JSONObject();
-		obj.put("type", "HELLO");
+		obj.put("type", "REPLY");
 		StringWriter out = new StringWriter();
 		try {
 			obj.writeJSONString(out);
