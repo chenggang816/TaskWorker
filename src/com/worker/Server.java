@@ -19,7 +19,7 @@ import com.worker.msg.MsgHandler;
 import com.worker.msg.MsgHandlerFactory;
 
 public class Server {
-	int port = 8000;  
+	final int port = 8899;  
 	//定义一个ServerSocket监听在端口port上  
 	ServerSocket server = null;
 	//server尝试接收其他Socket的连接请求，server的accept方法是阻塞式的  
@@ -31,11 +31,10 @@ public class Server {
 		System.err.println("Server Console");
 		try {
 			server = new ServerSocket(port);
-
-
-
 		} catch (IOException e) {
 			e.printStackTrace();
+			System.err.println("\n\t异常：无法在端口" + port + "上启动SocketServer,Server Console已退出");
+			System.exit(0);
 		}  
 	}
 
