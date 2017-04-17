@@ -5,8 +5,8 @@ import java.io.StringWriter;
 
 import org.json.simple.JSONObject;
 
-public class MsgMgr {
-	public static String packReplyMsg(){
+public class MsgCreator {
+	public static String createReplyMsg(){
 		JSONObject obj = new JSONObject();
 		obj.put("type", "REPLY");
 		StringWriter out = new StringWriter();
