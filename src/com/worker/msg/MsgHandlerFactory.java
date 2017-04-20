@@ -14,6 +14,8 @@ public class MsgHandlerFactory {
 			switch(msgType){
 			case "HELLO":
 				return new HelloMsgHandler();
+			case "TASK_INFO":
+				return new TaskInfoMsgHandler(msg.get("content").toString());
 			default:
 				return new UnresolvedMsgHandler();
 			}

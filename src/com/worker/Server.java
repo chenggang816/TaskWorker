@@ -1,6 +1,7 @@
 package com.worker;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -15,11 +16,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.tools.FileHelper;
 import com.worker.msg.MsgHandler;
 import com.worker.msg.MsgHandlerFactory;
 
 public class Server {
-	final int port = 8899;  
+	final int port = getPortFromConfig();  
 	//定义一个ServerSocket监听在端口port上  
 	ServerSocket server = null;
 	//server尝试接收其他Socket的连接请求，server的accept方法是阻塞式的  
@@ -28,7 +30,7 @@ public class Server {
 	PrintWriter out = null;
 
 	public Server() {
-		System.err.println("Server Console");
+		System.err.println("服务已开启，开启端口为：" + port);
 		try {
 			server = new ServerSocket(port);
 		} catch (IOException e) {
@@ -51,14 +53,16 @@ public class Server {
 
 				//从socket读入
 				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+				String msg = "";
 				String line = null;
 				while((line = in.readLine()) != null){
 					System.out.println("Client:" + line);
-					MsgHandler handler = MsgHandlerFactory.getMsgHandler(line);
-					String strReply = handler.handle();
-					if(strReply != null){
-						send(strReply);
-					}
+					msg += line;
+				}
+				MsgHandler handler = MsgHandlerFactory.getMsgHandler(msg);
+				String strReply = handler.handle();
+				if(strReply != null){
+					send(strReply);
 				}
 			}
 		} catch (IOException e) {
@@ -77,5 +81,17 @@ public class Server {
 		}
 		out.println(strMsg);
 		out.print("\n");
+	}
+	
+	private int getPortFromConfig(){
+		int port = 30000;
+		File conf = FileMgr.getConfigFile();
+		if(conf == null) return port;
+		String text = FileHelper.ReadAllFromFile(conf);
+		try{
+			return Integer.parseInt(text);
+		}catch(NumberFormatException e){
+			return port;
+		}
 	}
 }
