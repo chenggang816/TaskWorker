@@ -9,8 +9,8 @@ import com.tools.JSONHelper;
 import com.worker.Server;
 
 public class MsgCreator {
-	private static String[] keys = {"host","port","type","content"};
-	private static String createMsg(String[] values){
+	private static String[] keys = {"ip","port","type","content"};
+	private static String createMsg(Object[] values){
 		if(keys.length < values.length) throw new RuntimeException("值数组长度越界");
 		JSONObject obj = new JSONObject();
 		obj.put(keys[0], HelloMsgHandler.ip);
@@ -34,7 +34,7 @@ public class MsgCreator {
 		return null;
 	}
 	
-	public static String createTaskInfoReplyMsg(String content){
-		return createMsg(new String[]{"TASK_INFO_REPLY",String.valueOf(content)});
+	public static String createTaskInfoReplyMsg(JSONObject taskState){
+		return createMsg(new Object[]{"TASK_INFO_REPLY",taskState});
 	}
 }

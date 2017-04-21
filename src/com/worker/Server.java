@@ -59,6 +59,7 @@ public class Server extends Object{
 					System.out.println("Client:" + line);
 					msg += line;
 				}
+				
 				MsgHandler handler = MsgHandlerFactory.getMsgHandler(msg);
 				String strReply = handler.handle();
 				if(strReply != null){

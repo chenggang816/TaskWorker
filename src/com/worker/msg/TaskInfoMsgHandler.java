@@ -45,7 +45,7 @@ public class TaskInfoMsgHandler extends MsgHandler {
 			mapTaskState.put(taskName, ti.getVersion());
 		}
 		JSONObject taskState = new JSONObject(mapTaskState);
-		return MsgCreator.createTaskInfoReplyMsg(JSONHelper.toJSONString(taskState));
+		return MsgCreator.createTaskInfoReplyMsg(taskState);
 	}
 
 }

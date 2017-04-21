@@ -37,6 +37,10 @@ public class FileMgr {
 	}
 	
 	public static File getTheTaskConfigFile(String taskName){
-		return FileHelper.getFile(getTheTaskDir(taskName), "task.conf", false);
+		File dir = getTheTaskDir(taskName);
+		if(dir == null || dir.exists() == false){
+			return null;
+		}
+		return FileHelper.getFile(dir, "task.conf", false);
 	}
 }
