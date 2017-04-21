@@ -57,10 +57,15 @@ public class FileHelper {
 		if(!dir.isDirectory()) return null;
 		return dir;
 	}
+	
 	public static File getDir(File dirBase,String dirName){
+		return getDir(dirBase,dirName,true);
+	}
+	
+	public static File getDir(File dirBase,String dirName,boolean createNew){
 		if(dirBase == null || dirBase.exists() == false) throw new RuntimeException("基目录不存在");
 		File dir = new File(dirBase,dirName);
-		dir.mkdir();
+		if(createNew && !dir.exists()) dir.mkdir();
 		return dir;
 	}
 	/*

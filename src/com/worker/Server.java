@@ -20,8 +20,8 @@ import com.tools.FileHelper;
 import com.worker.msg.MsgHandler;
 import com.worker.msg.MsgHandlerFactory;
 
-public class Server {
-	final int port = getPortFromConfig();  
+public class Server extends Object{
+	public static final int port = getPortFromConfig();  
 	//定义一个ServerSocket监听在端口port上  
 	ServerSocket server = null;
 	//server尝试接收其他Socket的连接请求，server的accept方法是阻塞式的  
@@ -83,7 +83,7 @@ public class Server {
 		out.print("\n");
 	}
 	
-	private int getPortFromConfig(){
+	private static int getPortFromConfig(){
 		int port = 30000;
 		File conf = FileMgr.getConfigFile();
 		if(conf == null) return port;
@@ -94,4 +94,5 @@ public class Server {
 			return port;
 		}
 	}
+	
 }

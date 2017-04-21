@@ -4,22 +4,22 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.tools.JSONHelper;
+
 public class MsgHandlerFactory {
 	public static MsgHandler getMsgHandler(String strMsg){
-		JSONParser parser = new JSONParser();
-		JSONObject msg;
+		JSONObject msg = JSONHelper.parse(strMsg);
 		try {
-			msg = (JSONObject)parser.parse(strMsg);
 			String msgType = msg.get("type").toString();
 			switch(msgType){
 			case "HELLO":
-				return new HelloMsgHandler();
+				return new HelloMsgHandler(msg.get("ip").toString());
 			case "TASK_INFO":
 				return new TaskInfoMsgHandler(msg.get("content").toString());
 			default:
 				return new UnresolvedMsgHandler();
 			}
-		} catch (ParseException e) {
+		} catch (NullPointerException e) {
 			e.printStackTrace();
 			return new UnresolvedMsgHandler();
 		}
