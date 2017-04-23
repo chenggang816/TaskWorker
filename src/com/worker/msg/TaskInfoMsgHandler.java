@@ -19,30 +19,37 @@ public class TaskInfoMsgHandler extends MsgHandler {
 	public TaskInfoMsgHandler(String content) {
 		this.content = content;
 	}
-	
+	/*
+	 * 	获取本地任务版本信息，并以JSON字符串形式返回
+	 */
 	@Override
 	public String handle() {
-		//获取任务版本信息
 		JSONObject obj = JSONHelper.parse(content);
 		JSONArray tasks = (JSONArray)(obj.get("tasks"));
-		Map<String, String> mapTaskState = new HashMap<String, String>();
+		Map<String, Object> mapTaskState = new HashMap<String, Object>();
 		for(Object o:tasks){
 			JSONObject task = (JSONObject)o;
 			String taskName = (String)task.get("taskname");
+			String version = (String)task.get("version");
+			
+			JSONObject taskInfo = new JSONObject();
+			taskInfo.put("version-manager", version);
+			mapTaskState.put(taskName, taskInfo);
 			
 			File taskConf = FileMgr.getTheTaskConfigFile(taskName);
 			if(taskConf == null || !taskConf.exists()) {
-				mapTaskState.put(taskName, "NotExist");
+				taskInfo.put("version-worker", "-1"); //表示任务不存在
 				continue;
 			}
 			String taskConfStr = FileHelper.ReadAllFromFile(taskConf);
 			if(taskConfStr == null){
-				mapTaskState.put(taskName, "ConfigException");
+				taskInfo.put("version-worker", "-2"); //表示配置文件未找到
 				continue;
 			}
 			TaskInfo ti = new TaskInfo();
 			ti.parseJSON(taskConfStr);
-			mapTaskState.put(taskName, ti.getVersion());
+			taskInfo.put("version-worker", ti.getVersion());
+			
 		}
 		JSONObject taskState = new JSONObject(mapTaskState);
 		return MsgCreator.createTaskInfoReplyMsg(taskState);

@@ -23,7 +23,7 @@ import com.worker.msg.MsgHandlerFactory;
 public class Server extends Object{
 	public static final int port = getPortFromConfig();  
 	//定义一个ServerSocket监听在端口port上  
-	ServerSocket server = null;
+	static ServerSocket server = null;
 	//server尝试接收其他Socket的连接请求，server的accept方法是阻塞式的  
 	Socket socket = null;
 	BufferedReader in = null;
@@ -94,6 +94,13 @@ public class Server extends Object{
 		}catch(NumberFormatException e){
 			return port;
 		}
+	}
+	
+	/*
+	 * 获取ServerSocket对象
+	 */
+	public static ServerSocket getServerSocket(){
+		return server;
 	}
 	
 }

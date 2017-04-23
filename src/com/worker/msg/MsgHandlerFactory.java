@@ -16,6 +16,8 @@ public class MsgHandlerFactory {
 				return new HelloMsgHandler(msg.get("ip").toString());
 			case "TASK_INFO":
 				return new TaskInfoMsgHandler(msg.get("content").toString());
+			case "TASK_UPDATE":
+				return new TaskUpdateMsgHandler(msg);
 			default:
 				return new UnresolvedMsgHandler();
 			}
