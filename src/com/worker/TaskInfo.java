@@ -42,7 +42,8 @@ public class TaskInfo {
 		if(obj == null) return;
 		
 		setPath(obj.get("path").toString());
-		setSuccess(obj.get("success").toString());
+		if(obj.get("success") != null)
+			setSuccess(obj.get("success").toString());
 		setVersion(obj.get("version").toString());
 	}
 }

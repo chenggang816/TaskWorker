@@ -38,14 +38,16 @@ public class FileHelper {
 	 */
 	public static String ReadAllFromFile(File file){
 		if(file == null || !file.exists()) return null;
-		String text = "";
+		StringBuilder text = new StringBuilder();
 		String line;
 		try {
 			BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file),"utf-8"));
 			while((line = in.readLine()) != null){
-				text += line;
+				text.append(line);
+				text.append("\n");
 			}
-			return text;
+			text.deleteCharAt(text.length() - 1);
+			return text.toString();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -87,5 +89,15 @@ public class FileHelper {
 	}
 	public static File getFile(File dirBase, String fileName){
 		return getFile(dirBase,fileName,true);
+	}
+	public static void deleteDir(File dir) {
+		if(dir == null || !dir.exists()) return;
+		for(File file:dir.listFiles()){
+			if(file.isFile()) 
+				file.delete();
+			else if(file.isDirectory()) 
+				deleteDir(file);
+		}
+		dir.delete();
 	}
 }

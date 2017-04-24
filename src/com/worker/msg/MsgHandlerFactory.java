@@ -18,6 +18,8 @@ public class MsgHandlerFactory {
 				return new TaskInfoMsgHandler(msg.get("content").toString());
 			case "TASK_UPDATE":
 				return new TaskUpdateMsgHandler(msg);
+			case "TASK_CLEAR":
+				return new TaskClearMsgHandler(msg);
 			default:
 				return new UnresolvedMsgHandler();
 			}

@@ -1,7 +1,12 @@
 package com.worker;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -17,6 +22,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import com.tools.FileHelper;
+import com.worker.msg.MsgCreator;
 import com.worker.msg.MsgHandler;
 import com.worker.msg.MsgHandlerFactory;
 
@@ -25,7 +31,7 @@ public class Server extends Object{
 	//定义一个ServerSocket监听在端口port上  
 	static ServerSocket server = null;
 	//server尝试接收其他Socket的连接请求，server的accept方法是阻塞式的  
-	Socket socket = null;
+	static Socket socket = null;
 	BufferedReader in = null;
 	PrintWriter out = null;
 
@@ -53,14 +59,15 @@ public class Server extends Object{
 
 				//从socket读入
 				in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				String msg = "";
+				StringBuilder msg = new StringBuilder();
 				String line = null;
 				while((line = in.readLine()) != null){
-					System.out.println("Client:" + line);
-					msg += line;
+					System.out.println("From Manager:" + line);
+					msg.append(line);
+					msg.append("\n");
 				}
-				
-				MsgHandler handler = MsgHandlerFactory.getMsgHandler(msg);
+				msg.deleteCharAt(msg.length() - 1);
+				MsgHandler handler = MsgHandlerFactory.getMsgHandler(msg.toString());
 				String strReply = handler.handle();
 				if(strReply != null){
 					send(strReply);
@@ -72,16 +79,20 @@ public class Server extends Object{
 
 	} 
 
-	public void send(String strMsg){
+	public static void send(String strMsg){
 		if(socket == null) return;
+		PrintWriter out = null;
 		try {
 			//向socket输出
 			out = new PrintWriter(socket.getOutputStream(),true);
+			out.println(strMsg);
+			socket.shutdownOutput();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}finally{
+			out.close();
 		}
-		out.println(strMsg);
-		out.print("\n");
+		
 	}
 	
 	private static int getPortFromConfig(){
@@ -99,8 +110,42 @@ public class Server extends Object{
 	/*
 	 * 获取ServerSocket对象
 	 */
-	public static ServerSocket getServerSocket(){
-		return server;
+	public static void receiveFile(File file){
+		if(file == null) throw new RuntimeException("文件对象为空！");
+		File parent = file.getParentFile();
+		if(!parent.exists()) parent.mkdirs();
+		DataInputStream dis=null;  
+		DataOutputStream dos = null;
+		Socket socket = null;
+		try {
+			socket = server.accept();
+			dis = new DataInputStream(new BufferedInputStream(
+					socket.getInputStream()));
+			dos = new DataOutputStream(   
+		            new BufferedOutputStream(new BufferedOutputStream(
+		                new FileOutputStream(file))));
+			long len = dis.readLong();
+			System.out.println("文件的长度为:" + len/1024/1024 + "    MB");
+			System.out.println("开始接收文件!");
+			byte[] buffer = new byte[1024];
+			long passedlen = 0;
+			int read;
+			while((read = dis.read(buffer)) != -1){
+				passedlen += read;   
+//	            System.out.println("文件接收了" + (passedlen * 100 / len) + "%");   
+	            dos.write(buffer, 0, read);
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}finally{
+			try {
+				dis.close();
+				dos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 }
