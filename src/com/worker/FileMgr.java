@@ -15,7 +15,7 @@ public class FileMgr {
 	 * 获取配置文件
 	 */
 	public static File getConfigFile(){
-		return FileHelper.getFile(getConfigDir(),"server.conf");
+		return FileHelper.getFile(getConfigDir(),"server.conf",false);
 	}
 	
 	/*

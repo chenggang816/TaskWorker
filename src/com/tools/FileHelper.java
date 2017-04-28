@@ -87,9 +87,9 @@ public class FileHelper {
 		}
 		return null;
 	}
-	public static File getFile(File dirBase, String fileName){
-		return getFile(dirBase,fileName,true);
-	}
+//	public static File getFile(File dirBase, String fileName){
+//		return getFile(dirBase,fileName,true);
+//	}
 	public static void deleteDir(File dir) {
 		if(dir == null || !dir.exists()) return;
 		for(File file:dir.listFiles()){
